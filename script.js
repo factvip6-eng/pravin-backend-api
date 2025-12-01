@@ -1,104 +1,118 @@
-const backend = "https://pravin-backend.onrender.com";
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
 
-// ----------------------
-// DARK/LIGHT MODE
-// ----------------------
-function toggleTheme(){
-    document.body.classList.toggle("dark");
-}
+const app = express();
+app.use(cors());
 
-// ----------------------
-// BREAKING NEWS
-// ----------------------
-async function loadBreakingNews(){
-    let data = await fetch(backend + "/api/news")
-    data = await data.json();
-
-    document.getElementById("breakingNews").innerText =
-        data.map(n => n.title).join(" | ");
-}
-setInterval(loadBreakingNews, 60000);
-loadBreakingNews();
-
-// ----------------------
-// WEATHER AUTO DETECT
-// ----------------------
-navigator.geolocation.getCurrentPosition(async pos=>{
-    let lat = pos.coords.latitude;
-    let lon = pos.coords.longitude;
-
-    let w = await fetch(`${backend}/api/weather?lat=${lat}&lon=${lon}`);
-    w = await w.json();
-
-    document.getElementById("weatherCity").innerText = w.city;
-    document.getElementById("weatherTemp").innerText = w.temp + "°C";
-    document.getElementById("weatherCond").innerText = w.cond;
+// ----------------------------
+// TEST ROUTE
+// ----------------------------
+app.get("/", (req, res) => {
+    res.send("Backend Working ✔");
 });
 
-// ----------------------
-// QUOTES
-// ----------------------
-async function loadQuotes(){
-    let q = await fetch(backend + "/api/quotes");
-    q = await q.json();
+// ----------------------------
+// YOUTUBE AUTO NEW VIDEOS
+// ----------------------------
+app.get("/api/youtube", async (req, res) => {
+    try {
+        const channelId = "UCg3K5RVQmM2DaG7nYqvXcyQ"; // आपका चैनल
+        const key = process.env.YT_KEY; // ENV KEY
 
-    document.getElementById("quoteText").innerText = q.q;
-    document.getElementById("quoteAuthor").innerText = "- " + q.a;
-}
-loadQuotes();
+        const url = `https://www.googleapis.com/youtube/v3/search?key=${key}&channelId=${channelId}&part=snippet,id&order=date&maxResults=12`;
 
-// ----------------------
-// TRENDING (SLIDER)
-// ----------------------
-let trendIndex = 0;
-async function loadTrending(){
-    let t = await fetch(backend + "/api/trending");
-    t = await t.json();
+        const data = await (await fetch(url)).json();
 
-    setInterval(()=>{
-        document.getElementById("trendTitle").innerText = t[trendIndex];
-        document.getElementById("trendImg").src =
-            `https://source.unsplash.com/600x300/?india,news,${t[trendIndex]}`;
-        trendIndex = (trendIndex + 1) % t.length;
-    }, 10000);
-}
-loadTrending();
+        const videos = data.items.map(v => ({
+            title: v.snippet.title,
+            thumbnail: v.snippet.thumbnails.high.url,
+            videoId: v.id.videoId
+        }));
 
-// ----------------------
-// YOUTUBE VIDEOS
-// ----------------------
-async function loadYTVideos(){
-    let yt = await fetch(backend + "/api/youtube");
-    yt = await yt.json();
-
-    let html = "";
-    yt.forEach(v=>{
-        html += `
-        <div>
-            <img src="${v.thumbnail}">
-            <p>${v.title}</p>
-            <a href="https://youtube.com/watch?v=${v.videoId}" target="_blank">▶ Watch</a>
-        </div>`;
-    });
-
-    document.getElementById("ytVideos").innerHTML = html;
-}
-loadYTVideos();
-
-// ----------------------
-// BACK TO TOP BUTTON
-// ----------------------
-window.onscroll = ()=>{
-    if(document.documentElement.scrollTop > 200){
-        document.querySelector(".top-btn").style.display="block";
-    } else {
-        document.querySelector(".top-btn").style.display="none";
+        res.json(videos);
+    } catch (err) {
+        res.json({ error: err.toString() });
     }
-};
+});
 
-function scrollTopFunc(){
-    window.scrollTo({top:0, behavior:"smooth"});
-}
+// ----------------------------
+// TOP 10 NATIONAL HEADLINES
+// ----------------------------
+app.get("/api/news", async (req, res) => {
+    try {
+        const key = process.env.NEWS_KEY;
 
-// FOOTER YEAR
-document.getElementById("year").innerText = new Date().getFullYear();
+        const data = await (await fetch(
+            `https://newsapi.org/v2/top-headlines?country=in&pageSize=10&apiKey=${key}`
+        )).json();
+
+        const news = data.articles.map(n => ({
+            title: n.title,
+            img: n.urlToImage,
+            link: n.url
+        }));
+
+        res.json(news);
+    } catch (err) {
+        res.json({ error: err.toString() });
+    }
+});
+
+// ----------------------------
+// QUOTES API
+// ----------------------------
+app.get("/api/quotes", async (req, res) => {
+    try {
+        const q = await (await fetch("https://zenquotes.io/api/random")).json();
+        res.json(q[0]);
+    } catch (err) {
+        res.json({ error: err.toString() });
+    }
+});
+
+// ----------------------------
+// TRENDING KEYWORDS
+// ----------------------------
+app.get("/api/trending", async (req, res) => {
+    try {
+        const rss = await (await fetch("https://trends.google.com/trending/rss?geo=IN")).text();
+
+        const keywords = [...rss.matchAll(/<title>(.*?)<\/title>/g)]
+            .map(m => m[1])
+            .slice(1, 6);
+
+        res.json(keywords);
+    } catch (err) {
+        res.json({ error: err.toString() });
+    }
+});
+
+// ----------------------------
+// WEATHER AUTO DETECT
+// ----------------------------
+app.get("/api/weather", async (req, res) => {
+    try {
+        const { lat, lon } = req.query;
+        const key = process.env.WEATHER_KEY;
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`;
+
+        const data = await (await fetch(url)).json();
+
+        res.json({
+            city: data.name,
+            temp: data.main.temp,
+            cond: data.weather[0].main
+        });
+    } catch (err) {
+        res.json({ error: err.toString() });
+    }
+});
+
+
+// ----------------------------
+// RENDER PORT FIX
+// ----------------------------
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Backend Live on PORT", PORT));

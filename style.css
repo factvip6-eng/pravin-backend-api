@@ -1,0 +1,162 @@
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f3f4f6;
+    transition:0.3s;
+}
+
+body.dark{
+    background:#0d1117;
+    color:white;
+}
+
+header{
+    position:sticky;
+    top:0;
+    background:#0077ff;
+    padding:14px;
+    color:white;
+    font-weight:bold;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:10;
+}
+
+.mode-toggle{
+    background:white;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    color:black;
+}
+
+/* MARQUEE */
+.marquee{
+    background:#ff002b;
+    padding:8px;
+    color:white;
+    font-size:15px;
+    white-space:nowrap;
+    overflow:hidden;
+}
+
+.marquee span{
+    display:inline-block;
+    animation:scroll 10s linear infinite;
+}
+
+@keyframes scroll{
+    0%{transform:translateX(100%);}
+    100%{transform:translateX(-100%);}
+}
+
+/* WEATHER */
+.weather-box{
+    background:white;
+    margin:10px;
+    padding:12px;
+    border-radius:10px;
+    box-shadow:0 0 6px #bbb;
+}
+
+/* QUOTE */
+.quote-box{
+    background:white;
+    margin:10px;
+    padding:12px;
+    border-radius:10px;
+    box-shadow:0 0 6px #bbb;
+}
+
+/* TRENDING */
+.trending-section{
+    margin:10px;
+    padding:12px;
+    background:white;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 0 6px #bbb;
+}
+
+.fade-img{
+    width:100%;
+    border-radius:10px;
+    height:200px;
+    object-fit:cover;
+    animation:fade 2s ease-in-out;
+}
+
+@keyframes fade{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+/* YOUTUBE */
+.videos-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.videos-grid div{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    transition:0.3s;
+}
+
+.videos-grid div:hover{
+    transform:scale(1.05);
+}
+
+.videos-grid img{
+    width:100%;
+}
+
+.videos-grid p{
+    margin:6px;
+}
+
+/* NEWS */
+.news-section{
+    margin:10px;
+    padding:12px;
+    background:white;
+    border-radius:10px;
+    box-shadow:0 0 6px #bbb;
+}
+
+.news-section ul{
+    padding-left:15px;
+}
+
+/* ADS */
+.ads-box{
+    padding:14px;
+    text-align:center;
+    background:white;
+    margin:10px;
+    border-radius:10px;
+}
+
+/* BACK TO TOP */
+.top-btn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#0077ff;
+    color:white;
+    padding:12px;
+    border-radius:50%;
+    cursor:pointer;
+    display:none;
+}
+
+/* FOOTER */
+footer{
+    background:#222;
+    color:white;
+    padding:12px;
+    text-align:center;
+}

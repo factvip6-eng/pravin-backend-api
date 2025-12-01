@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pravin Study Zone – Live Updates</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="title">⭐ Pravin Study Zone – Live News & Updates</div>
+    <div class="mode-toggle" onclick="toggleTheme()">🌗</div>
+</header>
+
+<!-- BREAKING NEWS -->
+<div class="marquee">
+    <span id="breakingNews">Loading Breaking News...</span>
+</div>
+
+<!-- WEATHER -->
+<section class="weather-box">
+    <h3>🌦 Live Weather</h3>
+    <p id="weatherCity">Detecting...</p>
+    <p id="weatherTemp">--°C</p>
+    <p id="weatherCond">---</p>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-box">
+    <h3>💭 आज का विचार</h3>
+    <p id="quoteText">Loading...</p>
+    <small id="quoteAuthor"></small>
+</section>
+
+<!-- TRENDING SLIDER -->
+<section class="trending-section">
+    <h3>🔥 Trending Now</h3>
+    <img id="trendImg" class="fade-img" src="" alt="Trending News">
+    <p id="trendTitle"></p>
+</section>
+
+<!-- YOUTUBE VIDEOS -->
+<section class="yt-section">
+    <h3>🟣 Latest Videos</h3>
+    <div id="ytVideos" class="videos-grid"></div>
+</section>
+
+<!-- TOP NEWS -->
+<section class="news-section">
+    <h3>📰 Top 10 National Headlines</h3>
+    <ul id="newsList"></ul>
+</section>
+
+<!-- ADS -->
+<div class="ads-box">
+    <b>ADVERTISEMENT</b>
+    <!-- यहाँ AdSense का कोड डालोगे -->
+    <p>(Ad Zone Ready)</p>
+</div>
+
+<!-- BACK TO TOP -->
+<div onclick="scrollTopFunc()" class="top-btn">⬆</div>
+
+<!-- FOOTER -->
+<footer>
+    © <span id="year"></span> Pravin Study Zone – All Rights Reserved
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
